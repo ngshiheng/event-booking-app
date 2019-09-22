@@ -1,5 +1,6 @@
 const graphql = require("graphql");
 const Event = require('../models/event');
+const User = require('../models/user');
 
 const { 
     GraphQLObjectType,
@@ -20,7 +21,27 @@ const EventType = new GraphQLObjectType({
         description: {type:GraphQLString},
         price: {type:GraphQLFloat},
         date: {type:GraphQLString},
-        
+        creator: {
+            type: UserType,
+            resolve(parent, args) {
+                return UserType.findById(parent.creatorId);
+            }
+        }
+    })
+});
+
+const UserType = new GraphQLObjectType({
+    name: 'User',
+    fields: () => ({
+        id: {type: GraphQLID},
+        email: {type: GraphQLString},
+        password: {type: GraphQLString},
+        events: {
+            type: new GraphQLList(EventType),
+            resolve(parent, args) {
+                return Event.find({creatorId: parent.id});
+            }
+        }
     })
 });
 
@@ -42,6 +63,22 @@ const RootQuery = new GraphQLObjectType({
             resolve(parent, args) {
                 return Event.find({});
             }
+        },
+
+        user: {
+            type: UserType,
+            args: {id: {type: GraphQLID}},
+
+            resolve(parent, args) {
+                return User.findById(args.id);
+            }
+        },
+
+        users: {
+            type: new GraphQLList(UserType),
+            resolve(parent, args) {
+                return User.find({});
+            }
         }
     }
 });
@@ -57,6 +94,7 @@ const RootMutation = new GraphQLObjectType({
                 description: { type: new GraphQLNonNull(GraphQLString) },
                 price: { type: new GraphQLNonNull(GraphQLFloat) },
                 date: { type: new GraphQLNonNull(GraphQLString) },
+                creatorId: { type: new GraphQLNonNull(GraphQLID) },
             },
             resolve(parents, args) {
                 let event = new Event({
@@ -64,8 +102,24 @@ const RootMutation = new GraphQLObjectType({
                     description: args.description,
                     price: args.price,
                     date: args.date,
+                    creatorId: args.creatorId,
                 });
                 return event.save();
+            }
+        },
+
+        createUser: {
+            type: UserType,
+            args: {
+                email: { type: new GraphQLNonNull(GraphQLString) },
+                password: { type: new GraphQLNonNull(GraphQLString) },
+            },
+            resolve(parents, args) {
+                let user = new User({
+                    email: args.email,
+                    password: args.password,
+                });
+                return user.save();
             }
         }
     }
