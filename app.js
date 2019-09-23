@@ -86,20 +86,20 @@ app.use('/graphql', graphqlHTTP({
                 description: args.eventInput.description,
                 price: +args.eventInput.price,
                 date: new Date(args.eventInput.date),
-                creator: '5d872e6593fddd4b5c7cc5ef',
+                creator: '5d88a8cfe2f089181097eb65',
             });
             let createdEvent;
             return event
                 .save()
                 .then(result => {
-                    createdEvent = { result };
-                    return User.findById('5d872e6593fddd4b5c7cc5ef');
+                    createdEvent = { ...result._doc, _id: result._doc._id.toString() };
+                    return User.findById('5d88a8cfe2f089181097eb65');
                 })
                 .then(user => {
                     if (!user) {
                         throw new Error('User does not exists.');
                     }
-                    user.createEvents.push(event);
+                    user.createdEvents.push(event);
                     return user.save();
                 })
                 .then(result => {
@@ -126,7 +126,7 @@ app.use('/graphql', graphqlHTTP({
                     return user.save();
                 })
                 .then(result => {
-                    return result;
+                    return { ...result._doc, password: "Sorry, you can't see this", id: result.id };
                 })
                 .catch(err => {
                     throw err;
