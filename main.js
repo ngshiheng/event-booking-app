@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const app = express();
 
 // Database connection
-const URI = "mongodb+srv://jerry_test:I3EXtl6ZWQY6nLYB@graphql-jerry-wfbgv.mongodb.net/test?retryWrites=true&w=majority";
+const URI = "mongodb+srv://jerry_test:LC9BF72hTrzeLrsZ@graphql-jerry-wfbgv.mongodb.net/test?retryWrites=true&w=majority";
 mongoose.connect(URI, { useNewUrlParser: true });
 mongoose.connection.once('open', () => {
     console.log("Connected to database!");

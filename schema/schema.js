@@ -1,6 +1,7 @@
 const graphql = require("graphql");
 const Event = require('../models/event');
 const User = require('../models/user');
+const bcrypt = require('bcryptjs');
 
 const { 
     GraphQLObjectType,
@@ -21,10 +22,10 @@ const EventType = new GraphQLObjectType({
         description: {type:GraphQLString},
         price: {type:GraphQLFloat},
         date: {type:GraphQLString},
-        creator: {
+        creatorId: {
             type: UserType,
             resolve(parent, args) {
-                return UserType.findById(parent.creatorId);
+                return User.findById(parent.creatorId);
             }
         }
     })
@@ -68,7 +69,6 @@ const RootQuery = new GraphQLObjectType({
         user: {
             type: UserType,
             args: {id: {type: GraphQLID}},
-
             resolve(parent, args) {
                 return User.findById(args.id);
             }
@@ -107,23 +107,35 @@ const RootMutation = new GraphQLObjectType({
                 return event.save();
             }
         },
-
         createUser: {
             type: UserType,
             args: {
                 email: { type: new GraphQLNonNull(GraphQLString) },
                 password: { type: new GraphQLNonNull(GraphQLString) },
             },
-            resolve(parents, args) {
-                let user = new User({
-                    email: args.email,
-                    password: args.password,
-                });
-                return user.save();
+            async resolve(parent, args) {
+                return await User.findOne( {email: args.email} )
+                    .then((user) => {
+                        if (user) {
+                            throw new Error('Email already exists.');
+                        }
+                        return bcrypt.hash(args.password, 12);
+                    })
+                    .then(hashedPassword => {
+                        let user = new User({
+                            email: args.email,
+                            password : hashedPassword,
+                        });
+                        return user.save();
+                    })
+                    .then(result => {
+                        return { ...result._doc, password: "Sorry, you can't see this", id: result.id };
+                    });
             }
         }
     }
 });
+
 
 module.exports = new GraphQLSchema({
     query: RootQuery,
