@@ -21,6 +21,13 @@ mongoose.connect(
     console.log(err);
 });
 
+const user = userId => {
+    return User.findById(userId)
+        .then(user => {
+            return {...user._doc, _id: user.id};
+        });
+};
+
 // Schema
 const { buildSchema } = require('graphql');
 app.use(bodyParser.json());
@@ -32,12 +39,14 @@ app.use('/graphql', graphqlHTTP({
             description: String!
             price: Float!
             date: String!
+            creator: User!
         }
 
         type User {
             _id: ID!
             email: String!
             password: String
+            createdEvents: [Event!]
         }
 
         input EventInput {
@@ -71,9 +80,10 @@ app.use('/graphql', graphqlHTTP({
             // We can filter using:
             // Event.find({title: 'A test'});
             return Event.find()
+                .populate('creator')
                 .then(events => {
                     return events.map(event => {
-                        return event;
+                        return { ...event._doc, _id: event.id };
                     });
                 })
                 .catch(err => {

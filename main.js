@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 
 // Database connection
-const URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@graphql-jerry-wfbgv.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
+const URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@graphql-jerry-wfbgv.mongodb.net/test?retryWrites=true&w=majority`;
 mongoose.connect(URI, { useNewUrlParser: true });
 mongoose.connection.once('open', () => {
     console.log("Connected to database!");

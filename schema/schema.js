@@ -1,18 +1,36 @@
 const graphql = require("graphql");
 const Event = require('../models/event');
 const User = require('../models/user');
+const Booking = require('../models/booking');
 const bcrypt = require('bcryptjs');
-
 const { 
     GraphQLObjectType,
     GraphQLString,
-    GraphQLInt ,
     GraphQLSchema,
     GraphQLID,
     GraphQLFloat,
     GraphQLList,
     GraphQLNonNull,
 } = graphql;
+
+const BookingType = new GraphQLObjectType({
+    name: 'Booking',
+    fields: () => ({
+        id: {type: GraphQLID},
+        eventId: {
+            type: EventType,
+            resolve(parent, args) {
+                return Event.findById(parent.eventId);
+            },
+        userId: {
+            type: UserType,
+            resolve(parent, args) {
+                return User.findById(parent.userId);
+            }
+        }
+        }
+    })
+});
 
 const EventType = new GraphQLObjectType({
     name: 'Event',
@@ -50,10 +68,16 @@ const UserType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
+        bookings: {
+            type: new GraphQLList(BookingType),
+            resolve(parent, args) {
+                return BookingType.find({});
+            }
+        },
+
         event: {
             type: EventType,
             args: {id: {type: GraphQLID}},
-
             resolve(parent, args) {
                 return Event.findById(args.id);
             }
@@ -87,6 +111,37 @@ const RootQuery = new GraphQLObjectType({
 const RootMutation = new GraphQLObjectType({
     name: 'RootMutationType',
     fields: {
+        bookEvent: {
+            type: BookingType,
+            args: {
+                eventId: { type: new GraphQLNonNull(GraphQLID) },
+                userId: { type: new GraphQLNonNull(GraphQLID) },
+            },
+            resolve(parents, args) {
+                let booking = new Booking({
+                    eventId: args.eventId,
+                    userId: args.userId,
+                });
+                return booking.save();
+            }
+        },
+
+        cancelBooking: {
+            type: BookingType,
+            args: {
+                event: { type: new GraphQLNonNull(GraphQLID) },
+            },
+            async resolve(parent, args) {
+                return await Event.findById(parent.event)
+                    .then(() => {
+                        console.log('Event found!');
+                    })
+                    .catch((err) => {
+                        throw err;
+                    });
+            }
+        },
+
         createEvent: {
             type: EventType,
             args: {
@@ -107,6 +162,7 @@ const RootMutation = new GraphQLObjectType({
                 return event.save();
             }
         },
+        
         createUser: {
             type: UserType,
             args: {
