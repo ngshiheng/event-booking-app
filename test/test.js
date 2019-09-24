@@ -1,5 +1,6 @@
-const chai = require('chai');
-const expect = chai.expect;
+let chai = require('chai');
+const should = chai.should();
+const expect = chai.expect();
 const url = `http://localhost:4000`;
 const request = require('supertest')(url);
 
@@ -11,8 +12,8 @@ describe('GraphQL', () => {
         .end((err, res) => {
             // res will contain array with one user
             if (err) return done(err);
-            res.body.user.should.have.property('email');
-            res.body.user.should.have.property('password');
+            res.body.data.user.email.should.equal('creator1');
+            res.body.data.user.should.have.property('password');
             done();
         });
     }),
@@ -24,7 +25,14 @@ describe('GraphQL', () => {
           .end((err, res) => {
               // res will contain array of all users
               if (err) return done(err);
-              res.body.user.should.have.lengthOf(6);
+              resultArray = res.body.data.users;
+
+              for (let i = 0; i < resultArray.length; i++) {
+                  resultArray[i].should.have.property('id');
+                  resultArray[i].should.have.property('email');
+                  resultArray[i].should.have.property('password');
+              }
+              res.body.data.users.should.have.lengthOf(6);
             done();
           });
     });
