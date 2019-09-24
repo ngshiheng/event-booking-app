@@ -16,18 +16,18 @@ const {
 const BookingType = new GraphQLObjectType({
     name: 'Booking',
     fields: () => ({
-        id: {type: GraphQLID},
+        id: { type: GraphQLID },
         eventId: {
             type: EventType,
             resolve(parent, args) {
                 return Event.findById(parent.eventId);
-            },
+            }
+        },
         userId: {
             type: UserType,
             resolve(parent, args) {
                 return User.findById(parent.userId);
             }
-        }
         }
     })
 });
@@ -35,11 +35,11 @@ const BookingType = new GraphQLObjectType({
 const EventType = new GraphQLObjectType({
     name: 'Event',
     fields: () => ({
-        id: {type: GraphQLID},
-        title: {type:GraphQLString},
-        description: {type:GraphQLString},
-        price: {type:GraphQLFloat},
-        date: {type:GraphQLString},
+        id: { type: GraphQLID },
+        title:  {type:GraphQLString },
+        description: { type:GraphQLString },
+        price: { type:GraphQLFloat },
+        date: { type:GraphQLString },
         creatorId: {
             type: UserType,
             resolve(parent, args) {
@@ -52,13 +52,13 @@ const EventType = new GraphQLObjectType({
 const UserType = new GraphQLObjectType({
     name: 'User',
     fields: () => ({
-        id: {type: GraphQLID},
-        email: {type: GraphQLString},
-        password: {type: GraphQLString},
-        events: {
+        id: { type: GraphQLID },
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+        createdEvents: {
             type: new GraphQLList(EventType),
             resolve(parent, args) {
-                return Event.find({creatorId: parent.id});
+                return Event.find( { creatorId: parent.id } );
             }
         }
     })
@@ -68,6 +68,14 @@ const UserType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
+        booking: {
+            type: BookingType,
+            args: {id: {type: GraphQLID}},
+            resolve(parent, args) {
+                return Booking.findById(args.id);
+            }
+        },
+
         bookings: {
             type: new GraphQLList(BookingType),
             resolve(parent, args) {
@@ -185,7 +193,7 @@ const RootMutation = new GraphQLObjectType({
                         return user.save();
                     })
                     .then(result => {
-                        return { ...result._doc, password: "Sorry, you can't see this", id: result.id };
+                        return { ...result._doc, password: "Password is censored", id: result.id };
                     });
             }
         }
