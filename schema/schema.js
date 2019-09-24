@@ -137,12 +137,17 @@ const RootMutation = new GraphQLObjectType({
         cancelBooking: {
             type: BookingType,
             args: {
-                event: { type: new GraphQLNonNull(GraphQLID) },
+                id: { type: new GraphQLNonNull(GraphQLID) },
             },
             async resolve(parent, args) {
-                return await Event.findById(parent.event)
-                    .then(() => {
-                        console.log('Event found!');
+                return await Booking.findOne( {_id: args.id} )
+                    .then((booking) => {
+                        if (booking) {
+                            // return { ...Booking.deleteOne({ _id: booking.id })._doc };
+                            return Booking.deleteOne({ _id: booking.id });
+                        } else {
+                            throw new Error(`Booking no longer exist`);
+                        }
                     })
                     .catch((err) => {
                         throw err;
