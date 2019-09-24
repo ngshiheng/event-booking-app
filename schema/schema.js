@@ -71,7 +71,7 @@ const RootQuery = new GraphQLObjectType({
         bookings: {
             type: new GraphQLList(BookingType),
             resolve(parent, args) {
-                return BookingType.find({});
+                return Booking.find({});
             }
         },
 
