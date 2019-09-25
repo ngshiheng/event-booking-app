@@ -89,8 +89,11 @@ const RootQuery = new GraphQLObjectType({
                 let user;
                 try {
                     user = await User.findOne({ email: args.email });
+                    if (!user) {
+                        throw err;
+                    }
                 } catch (error) {
-                    throw new Error('Use does not exist!');
+                    throw new Error('User does not exist!');
                 }
                 let isEqual;
                 isEqual = await bcrypt.compare(args.password, user.password);
