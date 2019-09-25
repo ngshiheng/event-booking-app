@@ -3,15 +3,26 @@ const Event = require('../models/event');
 const User = require('../models/user');
 const Booking = require('../models/booking');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { 
     GraphQLObjectType,
     GraphQLString,
+    GraphQLInt,
     GraphQLSchema,
     GraphQLID,
     GraphQLFloat,
     GraphQLList,
     GraphQLNonNull,
 } = graphql;
+
+const AuthDataType = new GraphQLObjectType({
+    name: 'AuthData',
+    fields: () => ({
+        userId: { type: GraphQLID },        
+        token: { type: GraphQLString },
+        tokenExpiration: { type: GraphQLInt },
+    })
+});
 
 const BookingType = new GraphQLObjectType({
     name: 'Booking',
@@ -68,6 +79,35 @@ const UserType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
+        login: {
+            type: AuthDataType,
+            args: {
+                email: { type: GraphQLString },
+                password: { type: GraphQLString },
+            },
+            async resolve(parent, args) {
+                let user;
+                try {
+                    user = await User.findOne({ email: args.email });
+                } catch (error) {
+                    throw new Error('Use does not exist!');
+                }
+                let isEqual;
+                isEqual = await bcrypt.compare(args.password, user.password);
+                if (isEqual) {
+                    const token = jwt.sign(
+                        { userId: user.id, email: user.email },
+                        'somesupersecretkey',
+                        {
+                            expiresIn: '1h'
+                        });
+                    return { userId: user.id, token: token, tokenExpiration: 1};  
+                } else {
+                    throw new Error('Wrong password!');
+                }
+            }
+        },
+
         booking: {
             type: BookingType,
             args: {id: {type: GraphQLID}},
@@ -143,7 +183,6 @@ const RootMutation = new GraphQLObjectType({
                 return await Booking.findOne( {_id: args.id} )
                     .then((booking) => {
                         if (booking) {
-                            // return { ...Booking.deleteOne({ _id: booking.id })._doc };
                             return Booking.deleteOne({ _id: booking.id });
                         } else {
                             throw new Error(`Booking no longer exist`);

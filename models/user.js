@@ -9,7 +9,7 @@ const userSchema = new Schema({
     password: {
         type: String,
         require: true,
-        select: false,
+        // select: false,
     },
     createdEvents: [
         {
