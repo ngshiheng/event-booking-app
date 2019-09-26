@@ -114,14 +114,20 @@ const RootQuery = new GraphQLObjectType({
         booking: {
             type: BookingType,
             args: {id: {type: GraphQLID}},
-            resolve(parent, args) {
+            async resolve(parent, args, req) {
+                if (!req.isAuth) {
+                    throw new Error('Unauthenticated!');
+                }
                 return Booking.findById(args.id);
             }
         },
 
         bookings: {
             type: new GraphQLList(BookingType),
-            resolve(parent, args) {
+            async resolve(parent, args, req) {
+                if (!req.isAuth) {
+                    throw new Error('Unauthenticated!');
+                }
                 return Booking.find({});
             }
         },
@@ -168,7 +174,10 @@ const RootMutation = new GraphQLObjectType({
                 eventId: { type: new GraphQLNonNull(GraphQLID) },
                 userId: { type: new GraphQLNonNull(GraphQLID) },
             },
-            resolve(parents, args) {
+            async resolve(parents, args, req) {
+                if (!req.isAuth) {
+                    throw new Error('Unauthenticated!');
+                }
                 let booking = new Booking({
                     eventId: args.eventId,
                     userId: args.userId,
@@ -183,6 +192,9 @@ const RootMutation = new GraphQLObjectType({
                 id: { type: new GraphQLNonNull(GraphQLID) },
             },
             async resolve(parent, args) {
+                if (!req.isAuth) {
+                    throw new Error('Unauthenticated!');
+                }
                 return await Booking.findOne( {_id: args.id} )
                     .then((booking) => {
                         if (booking) {
@@ -206,7 +218,11 @@ const RootMutation = new GraphQLObjectType({
                 date: { type: new GraphQLNonNull(GraphQLString) },
                 creatorId: { type: new GraphQLNonNull(GraphQLID) },
             },
-            resolve(parents, args) {
+            async resolve(parents, args, req) {
+                if (!req.isAuth) {
+                    throw new Error('Unauthenticated!');
+                }
+
                 let event = new Event({
                     title: args.title,
                     description: args.description,

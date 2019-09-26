@@ -79,7 +79,7 @@ describe('GraphQL', () => {
                     resultArray[i].should.have.property('creatorId');
                     resultArray[i].creatorId.should.have.property('id');
                 }
-                res.body.data.events.should.have.lengthOf(5);
+                res.body.data.events.should.have.lengthOf(6);
             done();
             });
     });

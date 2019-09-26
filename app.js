@@ -3,6 +3,7 @@ const graphqlHTTP = require('express-graphql');
 const schema = require('./schema/schema');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const isAuth = require('./middleware/is-auth');
 dotenv.config();
 
 const app = express();
@@ -15,6 +16,7 @@ mongoose.connection.once('open', () => {
 });
 
 // Middleware
+app.use(isAuth);
 app.use("/graphql", graphqlHTTP({
     schema,
     graphiql: true
