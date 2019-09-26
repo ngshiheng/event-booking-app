@@ -15,7 +15,7 @@ const {
     GraphQLNonNull,
 } = graphql;
 
-// UserDataType does not have password in it's fields.
+// UserDataType does not have password in its fields.
 const UserDataType = new GraphQLObjectType({
     name: 'UserData',
     fields: () => ({
@@ -188,7 +188,6 @@ const RootMutation = new GraphQLObjectType({
             type: BookingType,
             args: {
                 eventId: { type: new GraphQLNonNull(GraphQLID) },
-                userId: { type: new GraphQLNonNull(GraphQLID) },
             },
             async resolve(parents, args, req) {
                 if (!req.isAuth) {
@@ -196,24 +195,25 @@ const RootMutation = new GraphQLObjectType({
                 }
                 let booking = new Booking({
                     eventId: args.eventId,
-                    userId: args.userId,
+                    userId: req.userId,
                 });
                 return booking.save();
             }
         },
 
+        // Authenticated user can only cancel bookings made by themselves
         cancelBooking: {
             type: BookingType,
             args: {
                 id: { type: new GraphQLNonNull(GraphQLID) },
             },
-            async resolve(parent, args) {
+            async resolve(parent, args, req) {
                 if (!req.isAuth) {
                     throw new Error('Unauthenticated!');
                 }
                 return await Booking.findOne( {_id: args.id} )
                     .then((booking) => {
-                        if (booking) {
+                        if (booking && booking.userId == req.userId) {
                             return Booking.deleteOne({ _id: booking.id });
                         } else {
                             throw new Error(`Booking no longer exist`);
@@ -232,7 +232,6 @@ const RootMutation = new GraphQLObjectType({
                 description: { type: new GraphQLNonNull(GraphQLString) },
                 price: { type: new GraphQLNonNull(GraphQLFloat) },
                 date: { type: new GraphQLNonNull(GraphQLString) },
-                creatorId: { type: new GraphQLNonNull(GraphQLID) },
             },
             async resolve(parents, args, req) {
                 if (!req.isAuth) {
@@ -244,7 +243,7 @@ const RootMutation = new GraphQLObjectType({
                     description: args.description,
                     price: args.price,
                     date: args.date,
-                    creatorId: args.creatorId,
+                    creatorId: req.userId,
                 });
                 return event.save();
             }
