@@ -15,6 +15,21 @@ const {
     GraphQLNonNull,
 } = graphql;
 
+// UserDataType does not have password in it's fields.
+const UserDataType = new GraphQLObjectType({
+    name: 'UserData',
+    fields: () => ({
+        id: { type: GraphQLID },
+        email: { type: GraphQLString },
+        createdEvents: {
+            type: new GraphQLList(EventType),
+            resolve(parent, args) {
+                return Event.find( { creatorId: parent.id } );
+            }
+        }
+    })
+});
+
 const AuthDataType = new GraphQLObjectType({
     name: 'AuthData',
     fields: () => ({
@@ -148,7 +163,7 @@ const RootQuery = new GraphQLObjectType({
         },
 
         user: {
-            type: UserType,
+            type: UserDataType,
             args: {id: {type: GraphQLID}},
             resolve(parent, args) {
                 return User.findById(args.id);
@@ -156,9 +171,10 @@ const RootQuery = new GraphQLObjectType({
         },
 
         users: {
-            type: new GraphQLList(UserType),
+            type: new GraphQLList(UserDataType),
             resolve(parent, args) {
                 return User.find({});
+                    
             }
         }
     }

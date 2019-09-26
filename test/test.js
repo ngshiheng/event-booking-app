@@ -4,27 +4,26 @@ const expect = chai.expect;
 const url = `http://localhost:4000`;
 const request = require('supertest')(url);
 
-// Connect to test DB
 
 describe('GraphQL', () => {
-   it(`Query a user with id, expects password to be null`, (done) => {
+   it(`Query a user with id`, (done) => {
        request.post('/graphql')
-        .send({ query: '{ user(id:"5d89c904c862252ca0e1f32d") { email password } }' })
+        .send({ query: '{ user(id:"5d89c904c862252ca0e1f32d") { id email createdEvents { id } } }' })
         .expect(200)
         .end((err, res) => {
             // res will contain array with one user
             if (err) return done(err);
             queryResult = res.body.data.user;
+            queryResult.should.have.property('id');
             queryResult.email.should.equal('creator1');
-            queryResult.should.have.property('password');
-            // expect(queryResult.password).to.be.a('null');
+            queryResult.should.have.property('createdEvents');
             done();
         });
     });
 
-    it('Return all users, expects password to be null', (done) => {
+    it('Return all users', (done) => {
         request.post('/graphql')
-          .send({ query: '{ users { id email password } }' })
+          .send({ query: '{ users { id email createdEvents { id } } }' })
           .expect(200)
           .end((err, res) => {
               // res will contain array of all users
@@ -34,8 +33,7 @@ describe('GraphQL', () => {
               for (let i = 0; i < resultArray.length; i++) {
                   resultArray[i].should.have.property('id');
                   resultArray[i].should.have.property('email');
-                  resultArray[i].should.have.property('password');
-                //   expect(resultArray[i].password).to.be.a('null');
+                  resultArray[i].should.have.property('createdEvents');
               }
               res.body.data.users.should.have.lengthOf(6);
             done();
