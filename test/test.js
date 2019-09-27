@@ -5,8 +5,8 @@ const url = `http://localhost:4000`;
 const request = require('supertest')(url);
 
 
-describe('GraphQL', () => {
-   it(`Query a user with id`, (done) => {
+describe('GraphQL queries', () => {
+   it(`user - Query a user with id`, (done) => {
        request.post('/graphql')
         .send({ query: '{ user(id:"5d89c904c862252ca0e1f32d") { id email createdEvents { id } } }' })
         .expect(200)
@@ -21,7 +21,7 @@ describe('GraphQL', () => {
         });
     });
 
-    it('Return all users', (done) => {
+    it('users - Query all users', (done) => {
         request.post('/graphql')
           .send({ query: '{ users { id email createdEvents { id } } }' })
           .expect(200)
@@ -40,7 +40,7 @@ describe('GraphQL', () => {
           });
     });
 
-    it(`Query a single event with id`, (done) => {
+    it(`event - Query an event with id`, (done) => {
         request.post('/graphql')
             .send({ query: '{ event(id:"5d89c9639899a819f8d3104e") { id title description price date creatorId { id }} }'})
             .expect(200)
@@ -59,7 +59,7 @@ describe('GraphQL', () => {
             });
         });
 
-    it('Return all existing events', (done) => {
+    it('events - Query all existing events', (done) => {
         request.post('/graphql')
             .send({ query: '{ events { id title description price date creatorId { id } } }' })
             .expect(200)
@@ -77,12 +77,12 @@ describe('GraphQL', () => {
                     resultArray[i].should.have.property('creatorId');
                     resultArray[i].creatorId.should.have.property('id');
                 }
-                res.body.data.events.should.have.lengthOf(6);
+                res.body.data.events.should.have.lengthOf(7);
             done();
             });
     });
 
-    it('Authenticated user gets back correct userId, token & tokenExpiration', (done) => {
+    it('login - Authenticated user gets back correct userId, token & tokenExpiration', (done) => {
         request.post('/graphql')
             .send({ query: '{ login(email: "user1", password: "test") { userId token tokenExpiration } }' })
             .expect(200)
@@ -93,11 +93,11 @@ describe('GraphQL', () => {
                 queryResult.should.have.property('userId');
                 queryResult.should.have.property('token');
                 queryResult.should.have.property('tokenExpiration');
-            done();
+             done();
             });
     });
 
-    it('Unauthenticated user does NOT get JSONWebToken', (done) => {
+    it('login - Unauthenticated user does NOT get JSONWebToken', (done) => {
         request.post('/graphql')
             .send({ query: '{ login(email: "creator1", password: "wrongpassword") { token tokenExpiration } }' })
             .expect(200)

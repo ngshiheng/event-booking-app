@@ -271,7 +271,7 @@ const RootMutation = new GraphQLObjectType({
                         return user.save();
                     })
                     .then(result => {
-                        return { ...result._doc, password: "Password is censored", id: result.id };
+                        return { ...result._doc, password: null, id: result.id };
                     });
             }
         }
