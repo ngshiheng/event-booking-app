@@ -26,4 +26,4 @@ app.listen(4000, () => {
     console.log("Now listening to port 4000.");
 });
 
-module.exports = app;
+// module.exports = app;
