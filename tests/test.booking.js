@@ -5,11 +5,11 @@ const url = `http://localhost:4000`;
 const request = require('supertest')(url);
 
 
-describe('GraphQL mutation - Booking', () => {
+describe('Booking - Mutation', () => {
 
     before(`login - Obtain JWT token`, (done) => {
         request.post('/graphql')
-            .send({ query: '{ login(email: "creator1", password: "test") { token } }' })
+            .send({ query: '{ login(email: "user1", password: "test") { token } }' })
             .expect(200)
             .end((err, res) => {
                 if (err) return done(err);
@@ -21,16 +21,33 @@ describe('GraphQL mutation - Booking', () => {
     it('bookEvent - Logged in user can book event', (done) => {
         request.post('/graphql')
             .set('Authorization', 'Bearer ' + jwtToken)
-            // .send({ query: 'mutation { bookEvent(eventId:"5d89c9639899a819f8d3104e") { id } }' })   // This eventId's title is "Party"
+            .send({ query: `mutation { bookEvent(eventId:"5d89c9639899a819f8d3104e") { id eventId {title} userId {email}} }` })   // This eventId's title is "Party"
             .expect(200)
             .end((err, res) => {
                 if (err) return done(err);
+                queryResult = res.body.data.bookEvent;
+                expect(queryResult.eventId.title).to.equal("Party");
+                expect(queryResult.userId.email).to.equal("user1");
+                newBookingId = queryResult.id;
+                // Query data using ORM to check if booking is made
+                done();
+            });  
+        });
+    
+    it('cancelBooking - Logged in user can cancel their own booking', (done) => {
+        request.post('/graphql')
+            .set('Authorization', 'Bearer ' + jwtToken)
+            .send({ query: `mutation { cancelBooking(id:"${newBookingId}") { id } }` })
+            .expect(200)
+            .end((err, res) => {
+                if (err) return done(err);
+                // Query data using ORM to check if booking is canceled
                 done();
             });  
         });
 });
 
-describe('GraphQL query - Booking', () => {
+describe('Booking - Query', () => {
 
     before(`login - Obtain JWT token`, (done) => {
         request.post('/graphql')

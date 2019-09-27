@@ -5,7 +5,7 @@ const url = `http://localhost:4000`;
 const request = require('supertest')(url);
 
 
-describe('GraphQL query - Event', () => {
+describe('Event - Query', () => {
 
     it(`event - Query an event with id`, (done) => {
         request.post('/graphql')
@@ -50,7 +50,7 @@ describe('GraphQL query - Event', () => {
     });
 });
 
-describe('GraphQL mutation - Event', () => {
+describe('Event - Mutation', () => {
 
     before(`login - Obtain JWT token`, (done) => {
         request.post('/graphql')
@@ -66,10 +66,12 @@ describe('GraphQL mutation - Event', () => {
     it('createEvent - Logged in user can create event', (done) => {
         request.post('/graphql')
             .set('Authorization', 'Bearer ' + jwtToken)
-            // .send({ query: 'mutation { createEvent(title:"Mocha", description:"Event created by Mocha test", price:69.69, date:"2019-09-24T07:43:59.039+00:00") { id } }' })
+            .send({ query: 'mutation { createEvent(title:"Mocha", description:"Event created by Mocha test", price:69.69, date:"2020-02-24T07:43:59.039+00:00") { id } }' })
             .expect(200)
             .end((err, res) => {
                 if (err) return done(err);
+                // Use ORM to check if event is created on database
+                // Need to use ORM to delete event after creation
                 done();
             });  
         });

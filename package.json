@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha tests/test*.js",
+    "test-single": "mocha $1",
     "start": "nodemon app.js"
   },
   "jest": {
