@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test2": "mocha test/test.js",
-    "start": "nodemon app.js",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "mocha test/test.js",
+    "start": "nodemon app.js"
   },
   "jest": {
     "testEnvironment": "node"
