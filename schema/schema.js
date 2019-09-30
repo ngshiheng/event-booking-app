@@ -4,7 +4,7 @@ const User = require('../models/user');
 const Booking = require('../models/booking');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { 
+const {
     GraphQLObjectType,
     GraphQLString,
     GraphQLInt,
@@ -24,7 +24,7 @@ const UserDataType = new GraphQLObjectType({
         createdEvents: {
             type: new GraphQLList(EventType),
             resolve(parent, args) {
-                return Event.find( { creatorId: parent.id } );
+                return Event.find({ creatorId: parent.id });
             }
         }
     })
@@ -33,7 +33,7 @@ const UserDataType = new GraphQLObjectType({
 const AuthDataType = new GraphQLObjectType({
     name: 'AuthData',
     fields: () => ({
-        userId: { type: GraphQLID },        
+        userId: { type: GraphQLID },
         token: { type: GraphQLString },
         tokenExpiration: { type: GraphQLInt },
     })
@@ -62,10 +62,10 @@ const EventType = new GraphQLObjectType({
     name: 'Event',
     fields: () => ({
         id: { type: GraphQLID },
-        title:  {type:GraphQLString },
-        description: { type:GraphQLString },
-        price: { type:GraphQLFloat },
-        date: { type:GraphQLString },
+        title: { type: GraphQLString },
+        description: { type: GraphQLString },
+        price: { type: GraphQLFloat },
+        date: { type: GraphQLString },
         creatorId: {
             type: UserType,
             resolve(parent, args) {
@@ -84,7 +84,7 @@ const UserType = new GraphQLObjectType({
         createdEvents: {
             type: new GraphQLList(EventType),
             resolve(parent, args) {
-                return Event.find( { creatorId: parent.id } );
+                return Event.find({ creatorId: parent.id });
             }
         }
     })
@@ -119,7 +119,7 @@ const RootQuery = new GraphQLObjectType({
                         {
                             expiresIn: '1h'
                         });
-                    return { userId: user.id, token: token, tokenExpiration: 1};  
+                    return { userId: user.id, token: token, tokenExpiration: 1 };
                 } else {
                     throw new Error('Wrong password!');
                 }
@@ -128,7 +128,7 @@ const RootQuery = new GraphQLObjectType({
 
         booking: {
             type: BookingType,
-            args: {id: {type: GraphQLID}},
+            args: { id: { type: GraphQLID } },
             async resolve(parent, args, req) {
                 if (!req.isAuth) {
                     throw new Error('Unauthenticated!');
@@ -149,7 +149,7 @@ const RootQuery = new GraphQLObjectType({
 
         event: {
             type: EventType,
-            args: {id: {type: GraphQLID}},
+            args: { id: { type: GraphQLID } },
             resolve(parent, args) {
                 return Event.findById(args.id);
             }
@@ -164,7 +164,7 @@ const RootQuery = new GraphQLObjectType({
 
         user: {
             type: UserDataType,
-            args: {id: {type: GraphQLID}},
+            args: { id: { type: GraphQLID } },
             resolve(parent, args) {
                 return User.findById(args.id);
             }
@@ -174,7 +174,7 @@ const RootQuery = new GraphQLObjectType({
             type: new GraphQLList(UserDataType),
             resolve(parent, args) {
                 return User.find({});
-                    
+
             }
         }
     }
@@ -211,7 +211,7 @@ const RootMutation = new GraphQLObjectType({
                 if (!req.isAuth) {
                     throw new Error('Unauthenticated!');
                 }
-                return await Booking.findOne( {_id: args.id} )
+                return await Booking.findOne({ _id: args.id })
                     .then((booking) => {
                         if (booking && booking.userId == req.userId) {
                             return Booking.deleteOne({ _id: booking.id });
@@ -248,7 +248,7 @@ const RootMutation = new GraphQLObjectType({
                 return event.save();
             }
         },
-        
+
         createUser: {
             type: UserType,
             args: {
@@ -256,7 +256,7 @@ const RootMutation = new GraphQLObjectType({
                 password: { type: new GraphQLNonNull(GraphQLString) },
             },
             async resolve(parent, args) {
-                return await User.findOne( {email: args.email} )
+                return await User.findOne({ email: args.email })
                     .then((user) => {
                         if (user) {
                             throw new Error('Email already exists.');
@@ -266,7 +266,7 @@ const RootMutation = new GraphQLObjectType({
                     .then(hashedPassword => {
                         let user = new User({
                             email: args.email,
-                            password : hashedPassword,
+                            password: hashedPassword,
                         });
                         return user.save();
                     })

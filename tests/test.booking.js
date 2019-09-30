@@ -16,7 +16,7 @@ describe('Booking - Mutation', () => {
                 jwtToken = res.body.data.login.token;
                 done();
             });
-        });
+    });
 
     it('bookEvent - Logged in user can book event', (done) => {
         request.post('/graphql')
@@ -31,9 +31,9 @@ describe('Booking - Mutation', () => {
                 newBookingId = queryResult.id;
                 // Query data using ORM to check if booking is made
                 done();
-            });  
-        });
-    
+            });
+    });
+
     it('cancelBooking - Logged in user can cancel their own booking', (done) => {
         request.post('/graphql')
             .set('Authorization', 'Bearer ' + jwtToken)
@@ -43,8 +43,8 @@ describe('Booking - Mutation', () => {
                 if (err) return done(err);
                 // Query data using ORM to check if booking is canceled
                 done();
-            });  
-        });
+            });
+    });
 });
 
 describe('Booking - Query', () => {
@@ -58,7 +58,7 @@ describe('Booking - Query', () => {
                 jwtToken = res.body.data.login.token;
                 done();
             });
-        });
+    });
 
     it('booking - Logged in user can query a booking', (done) => {
         request.post('/graphql')
@@ -71,8 +71,8 @@ describe('Booking - Query', () => {
                 queryResult.eventId.title.should.equal('Art');
                 queryResult.userId.email.should.equal('user1');
                 done();
-            });  
-        });
+            });
+    });
 
     it('bookings - Logged in user can query all bookings', (done) => {
         request.post('/graphql')
@@ -88,6 +88,6 @@ describe('Booking - Query', () => {
                     resultArray[i].should.have.property('userId');
                 }
                 done();
-            });  
-        });
+            });
+    });
 });

@@ -9,7 +9,7 @@ describe('Event - Query', () => {
 
     it(`event - Query an event with id`, (done) => {
         request.post('/graphql')
-            .send({ query: '{ event(id:"5d89c9639899a819f8d3104e") { id title description price date creatorId { id }} }'})
+            .send({ query: '{ event(id:"5d89c9639899a819f8d3104e") { id title description price date creatorId { id }} }' })
             .expect(200)
             .end((err, res) => {
                 if (err) return done(err);
@@ -24,7 +24,7 @@ describe('Event - Query', () => {
                 queryResult.creatorId.should.have.property("id");
                 done();
             });
-        });
+    });
 
     it('events - Query all existing events', (done) => {
         request.post('/graphql')
@@ -45,7 +45,7 @@ describe('Event - Query', () => {
                     resultArray[i].creatorId.should.have.property('id');
                 }
                 // res.body.data.events.should.have.lengthOf(7);
-            done();
+                done();
             });
     });
 });
@@ -61,7 +61,7 @@ describe('Event - Mutation', () => {
                 jwtToken = res.body.data.login.token;
                 done();
             });
-        });
+    });
 
     it('createEvent - Logged in user can create event', (done) => {
         request.post('/graphql')
@@ -73,6 +73,6 @@ describe('Event - Mutation', () => {
                 // Use ORM to check if event is created on database
                 // Need to use ORM to delete event after creation
                 done();
-            });  
-        });
+            });
+    });
 });
