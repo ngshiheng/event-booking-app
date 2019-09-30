@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Modal from '../components/Modal/Modal';
 import Backdrop from '../components/Backdrop/Backdrop';
 import AuthContext from '../context/auth-context';
+import Spinner from '../components/Spinner/Spinner';
 import './Events.css';
 import EventList from '../components/Events/EventList/EventList';
 
@@ -10,7 +11,8 @@ class EventsPage extends Component {
 
     state = {
         creating: false,
-        events: []
+        events: [],
+        isLoading: false,
     };
 
     static contextType = AuthContext;
@@ -109,6 +111,7 @@ class EventsPage extends Component {
     }
 
     fetchEvents = () => {
+        this.setState({ isLoading: true });
         const requestBody = {
             query: `
                 query {
@@ -142,10 +145,11 @@ class EventsPage extends Component {
             })
             .then(resData => {
                 const events = resData.data.events;
-                this.setState({ events: events });
+                this.setState({ events: events, isLoading: false });
             })
             .catch(err => {
                 console.log(err);
+                this.setState({ isLoading: false });
             });
     }
 
@@ -182,7 +186,8 @@ class EventsPage extends Component {
                     <p>Share your own Events!</p>
                     <button className="btn" onClick={this.startCreateEventHandler}>Create Event</button>
                 </div>)}
-                <EventList events={this.state.events} authUserId={this.context.userId} />
+                {this.state.isLoading ? (<Spinner />) : (<EventList events={this.state.events} authUserId={this.context.userId} />)}
+
             </React.Fragment>
         )
     }
