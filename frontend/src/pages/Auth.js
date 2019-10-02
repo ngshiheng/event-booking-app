@@ -19,7 +19,7 @@ class AuthPage extends Component {
 
     switchModeHanlder = () => {
         this.setState(prevState => {
-            return { isLogin: !prevState.isLogin};
+            return { isLogin: !prevState.isLogin };
         })
     }
 
@@ -28,7 +28,7 @@ class AuthPage extends Component {
         const email = this.emailEl.current.value;
         const password = this.passwordEl.current.value;
 
-        if (email.trim().length === 0 || password.trim().length === 0)  {
+        if (email.trim().length === 0 || password.trim().length === 0) {
             return;
         }
 
@@ -73,8 +73,8 @@ class AuthPage extends Component {
             .then(resData => {
                 if (resData.data.login.token) {
                     this.context.login(
-                        resData.data.login.token, 
-                        resData.data.login.userId, 
+                        resData.data.login.token,
+                        resData.data.login.userId,
                         resData.data.login.tokenExpiration
                     )
                 }
@@ -87,20 +87,20 @@ class AuthPage extends Component {
     render() {
         return (
             <form className="auth-form" onSubmit={this.submitHandler}>
-            <div className="form-control">
-                <label htmlFor="email">E-Mail</label>
-                <input type="email" id="email" ref={this.emailEl} />
-            </div>
-            <div className="form-control">
-                <label htmlFor="password">Password</label>
-                <input type="password" id="password" ref={this.passwordEl} />
-            </div>
-            <div className="form-actions">
-                <button type="submit">Submit</button>    
-                <button type="button" onClick={this.switchModeHanlder}>Switch to {this.state.isLogin ? 'Signup' : 'Login'}</button>
-            </div>
+                <div className="form-control">
+                    <label htmlFor="email">E-Mail</label>
+                    <input type="email" id="email" ref={this.emailEl} />
+                </div>
+                <div className="form-control">
+                    <label htmlFor="password">Password</label>
+                    <input type="password" id="password" ref={this.passwordEl} />
+                </div>
+                <div className="form-actions">
+                    <button type="submit">Submit</button>
+                    <button type="button" onClick={this.switchModeHanlder}>Switch to {this.state.isLogin ? 'Signup' : 'Login'}</button>
+                </div>
             </form>
-        ) 
+        )
     }
 }
 
