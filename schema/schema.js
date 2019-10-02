@@ -54,7 +54,9 @@ const BookingType = new GraphQLObjectType({
             resolve(parent, args) {
                 return User.findById(parent.userId);
             }
-        }
+        },
+        createdAt: { type: GraphQLString },
+        updatedAt: { type: GraphQLString },
     })
 });
 
