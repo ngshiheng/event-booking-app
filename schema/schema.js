@@ -68,7 +68,7 @@ const EventType = new GraphQLObjectType({
         title: { type: GraphQLString },
         description: { type: GraphQLString },
         price: { type: GraphQLFloat },
-        date: { type: GraphQLString },
+        date: { type: GraphQLDate },
         creatorId: {
             type: UserType,
             resolve(parent, args) {

@@ -246,7 +246,10 @@ class EventsPage extends Component {
                     this.state.selectedEvent && (
                         <Modal title={this.state.selectedEvent.title} canCancel canConfirm onCancel={this.modalCancelHandler} onConfirm={this.bookEventHandler} confirmText={this.context.token ? 'Book' : 'Confirm'}>
                             <h1>{this.state.selectedEvent.title}</h1>
-                            <h2>{this.state.selectedEvent.price} - {this.state.selectedEvent.date}</h2>
+                            <h2>
+                                ${this.state.selectedEvent.price} -{' '}
+                                {new Date(this.state.selectedEvent.date).toLocaleDateString()}
+                            </h2>
                             <p>{this.state.selectedEvent.description}</p>
                         </Modal>)
                 }
