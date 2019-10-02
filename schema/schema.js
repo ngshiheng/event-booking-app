@@ -14,6 +14,7 @@ const {
     GraphQLList,
     GraphQLNonNull,
 } = graphql;
+const GraphQLDate = require('graphql-date');
 
 // UserDataType does not have password in its fields.
 const UserDataType = new GraphQLObjectType({
@@ -55,8 +56,8 @@ const BookingType = new GraphQLObjectType({
                 return User.findById(parent.userId);
             }
         },
-        createdAt: { type: GraphQLString },
-        updatedAt: { type: GraphQLString },
+        createdAt: { type: GraphQLDate },
+        updatedAt: { type: GraphQLDate },
     })
 });
 

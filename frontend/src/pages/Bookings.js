@@ -21,6 +21,7 @@ class BookingsPage extends Component {
                 query {
                     bookings {
                         id
+                        createdAt
                         eventId {
                             id
                             title
@@ -66,6 +67,7 @@ class BookingsPage extends Component {
                             {this.state.bookings.map(booking => (
                                 <li key={booking.id}>
                                     {booking.eventId.title} -{' '}
+                                    {new Date(booking.createdAt).toLocaleDateString()}
                                 </li>
                             ))}
                         </ul>
