@@ -4,15 +4,15 @@ import { Bar as BarChart } from 'react-chartjs';
 const BOOKINGS_BUCKETS = {
     Cheap: {
         min: 0,
-        max: 49,
+        max: 49.99,
     },
     Normal: {
-        min: 50,
-        max: 99,
+        min: 50.00,
+        max: 99.99,
     },
     Expensive: {
-        min: 100,
-        max: 1000000000,
+        min: 100.00,
+        max: 10000000.00,
     },
 };
 
@@ -23,8 +23,8 @@ const bookingsChart = props => {
     for (const bucket in BOOKINGS_BUCKETS) {
         const filteredBookingsCount = props.bookings.reduce((prev, current) => {
             if (
-                current.eventId.price > BOOKINGS_BUCKETS[bucket].min &&
-                current.eventId.price < BOOKINGS_BUCKETS[bucket].max
+                current.eventId.price >= BOOKINGS_BUCKETS[bucket].min &&
+                current.eventId.price <= BOOKINGS_BUCKETS[bucket].max
             ) {
                 return prev + 1;
             } else {
