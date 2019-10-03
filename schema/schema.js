@@ -146,7 +146,8 @@ const RootQuery = new GraphQLObjectType({
                 if (!req.isAuth) {
                     throw new Error('Unauthenticated!');
                 }
-                return Booking.find({});
+                // Authenticated users can only see their own bookings:
+                return Booking.find({ userId: req.userId });
             }
         },
 
