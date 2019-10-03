@@ -1,7 +1,7 @@
 let chai = require('chai');
 const should = chai.should();
 const expect = chai.expect;
-const url = `http://localhost:4000`;
+const url = `http://localhost:8000`;
 const request = require('supertest')(url);
 
 
@@ -51,7 +51,7 @@ describe('Booking - Query', () => {
 
     before(`login - Obtain JWT token`, (done) => {
         request.post('/graphql')
-            .send({ query: '{ login(email: "creator1", password: "test") { token } }' })
+            .send({ query: '{ login(email: "user1@test.com", password: "test") { token } }' })
             .expect(200)
             .end((err, res) => {
                 if (err) return done(err);
@@ -63,13 +63,13 @@ describe('Booking - Query', () => {
     it('booking - Logged in user can query a booking', (done) => {
         request.post('/graphql')
             .set('Authorization', 'Bearer ' + jwtToken)
-            .send({ query: '{ booking(id:"5d89db6f0f09f630044379f7") { eventId { title } userId { email } } }' })   // This eventId's title is "Party"
+            .send({ query: '{ booking(id:"5d959324e7140e41ecd909df") { eventId { title } userId { email } } }' })   // This eventId's title is "Party"
             .expect(200)
             .end((err, res) => {
                 if (err) return done(err);
                 queryResult = res.body.data.booking;
-                queryResult.eventId.title.should.equal('Art');
-                queryResult.userId.email.should.equal('user1');
+                queryResult.eventId.title.should.equal('Party');
+                queryResult.userId.email.should.equal('user1@test.com');
                 done();
             });
     });
