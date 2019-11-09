@@ -1,0 +1,53 @@
+{
+    "name": "frontend",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "chart.js": "^1.1.1",
+        "react": "^16.10.1",
+        "react-chartjs": "^1.2.0",
+        "react-dom": "^16.10.1",
+        "react-router-dom": "^5.1.0",
+        "react-scripts": "3.1.2"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "lint": "concurrently \"npm run lint:eslint\" \"npm run lint:prettier\"",
+        "lint:eslint": "eslint . --ext js",
+        "lint:eslint:fix": "eslint --fix . --ext js --ignore-path ./.gitignore",
+        "lint:prettier": "prettier \"./src/**/*.{js,yml}\" -l",
+        "lint:prettier:fix": "prettier \"./src/**/*.{js,yml}\" --write --ignore-path ./.gitignore"
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "concurrently": "^5.0.0",
+        "eslint": "^6.6.0",
+        "eslint-config-prettier": "^6.5.0",
+        "eslint-plugin-graphql": "^3.1.0",
+        "eslint-plugin-jest": "^23.0.3",
+        "nodemon": "^1.19.3",
+        "prettier": "^1.19.0"
+    },
+    "prettier": {
+        "trailingComma": "all",
+        "tabWidth": 4,
+        "singleQuote": true
+    }
+}
