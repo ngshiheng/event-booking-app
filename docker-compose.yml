@@ -1,0 +1,18 @@
+version: "3"
+services:
+    server:
+        container_name: server
+        restart: always
+        build: ./server
+        image: event-booking-app/server
+        ports:
+            - "8000:8000"
+    client:
+        container_name: client
+        restart: always
+        build: ./client
+        image: event-booking-app/client
+        ports:
+            - "3000:3000"
+        links:
+            - server
