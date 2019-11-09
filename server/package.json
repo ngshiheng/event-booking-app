@@ -1,0 +1,51 @@
+{
+    "name": "graphql-react-event-booking",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "mocha tests/test*.js",
+        "test-single": "mocha $1",
+        "start": "nodemon app.js",
+        "lint": "concurrently \"npm run lint:eslint\" \"npm run lint:prettier\"",
+        "lint:eslint": "eslint . --ext js",
+        "lint:eslint:fix": "eslint --fix . --ext js --ignore-path ./.gitignore",
+        "lint:prettier": "prettier \"./**/*.{js,yml}\" -l",
+        "lint:prettier:fix": "prettier \"./**/*.{js,yml}\" --write --ignore-path ./.gitignore"
+    },
+    "jest": {
+        "testEnvironment": "node"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "body-parser": "^1.19.0",
+        "chart.js": "^1.1.1",
+        "dotenv": "^8.1.0",
+        "express": "^4.17.1",
+        "express-graphql": "^0.9.0",
+        "graphql": "^14.5.8",
+        "graphql-date": "^1.0.3",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^5.7.3"
+    },
+    "devDependencies": {
+        "chai": "^4.2.0",
+        "concurrently": "^5.0.0",
+        "eslint": "^6.6.0",
+        "eslint-config-prettier": "^6.5.0",
+        "eslint-plugin-graphql": "^3.1.0",
+        "eslint-plugin-jest": "^23.0.3",
+        "jest": "^24.9.0",
+        "mocha": "^6.2.1",
+        "nodemon": "^1.19.3",
+        "prettier": "^1.19.0",
+        "supertest": "^4.0.2"
+    },
+    "prettier": {
+        "trailingComma": "all",
+        "tabWidth": 4,
+        "singleQuote": true
+    }
+}
