@@ -3,7 +3,7 @@
 #################################################################################
 # Run this script for development.
 # If you only want to see the finished product, use Docker. 
-# Docker instruction: [https://github.com/ngshiheng/reading-list#using-docker].
+# Docker instruction: [https://github.com/ngshiheng/event-booking-app#using-docker-whale].
 #################################################################################
 
 # font color
